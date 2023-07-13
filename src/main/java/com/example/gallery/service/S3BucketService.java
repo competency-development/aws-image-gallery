@@ -1,122 +1,86 @@
 package com.example.gallery.service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 @Service
 public class S3BucketService {
 
-    private Logger logger = LoggerFactory.getLogger(S3BucketService.class);
-
     @Autowired
     private AmazonS3 s3Client;
 
-    @Value("${s3.bucket.name}")
-    private String bucketName;
+    @Value("${s3.bucket}")
+    private String bucket;
 
     /**
-     * Lists all objects on S3 bucket.
+     * Lists all object keys on the S3 bucket.
      * 
      * @return list of object keys
      */
-    public List<String> listObjects() {
-        ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
-                .withBucketName(bucketName);
+    public List<String> getAllKeys() {
+        ListObjectsRequest request = new ListObjectsRequest().withBucketName(bucket);
+        ObjectListing objectListing = s3Client.listObjects(request);
         List<String> keys = new ArrayList<>();
-        ObjectListing objects = s3Client.listObjects(listObjectsRequest);
         while (true) {
-            List<S3ObjectSummary> objectSummaries = objects.getObjectSummaries();
+            List<S3ObjectSummary> objectSummaries = objectListing.getObjectSummaries();
             if (objectSummaries.isEmpty()) {
                 break;
             }
-            for (S3ObjectSummary item : objectSummaries) {
-                if (!item.getKey().endsWith("/"))
-                    keys.add(item.getKey());
+            for (S3ObjectSummary objectSummary : objectSummaries) {
+                if (!objectSummary.getKey().endsWith("/"))
+                    keys.add(objectSummary.getKey());
             }
-            objects = s3Client.listNextBatchOfObjects(objects);
+            objectListing = s3Client.listNextBatchOfObjects(objectListing);
         }
         return keys;
     }
 
     /**
-     * Uploads file to AWS S3.
-     *
-     * @param objectKey - S3 bucket object key
-     * @param file      - local file
-     * @return upload result message
+     * Gets public URL for the object by key.
+     * 
+     * @param key object key in S3 bucket
+     * @return S3 URL
      */
-    public String uploadObject(String objectKey, MultipartFile file) {
-        try {
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(file.getSize());
-            metadata.setContentType(file.getContentType());
-            s3Client.putObject(bucketName, objectKey, file.getInputStream(), metadata);
-            return "File uploaded: " + objectKey;
-        } catch (IOException ioe) {
-            logger.error("IOException: {}", ioe.getMessage());
-        } catch (AmazonServiceException serviceException) {
-            logger.info("AmazonServiceException: {}", serviceException.getMessage());
-        } catch (AmazonClientException clientException) {
-            logger.info("AmazonClientException: {}", clientException.getMessage());
-        }
-        return "File not uploaded: " + objectKey;
+    public String getUrlByKey(String key) {
+        return s3Client.getUrl(bucket, key).toString();
     }
 
     /**
-     * Downloads object from S3 bucket.
-     *
-     * @param objectKey - key of object to download
-     * @return output stream of S3 object
+     * Uploads file to S3 bucket.
+     * 
+     * @param key  object key
+     * @param file file
+     * @return S3 URL
+     * @throws IOException if error occurred while reading file
      */
-    public ByteArrayOutputStream downloadObject(String objectKey) {
-        try {
-            S3Object s3object = s3Client.getObject(new GetObjectRequest(bucketName, objectKey));
-            InputStream is = s3object.getObjectContent();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    public String upload(String key, MultipartFile file) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
 
-            int len;
-            byte[] buffer = new byte[4096];
-            while ((len = is.read(buffer, 0, buffer.length)) != -1) {
-                outputStream.write(buffer, 0, len);
-            }
-
-            return outputStream;
-        } catch (Exception e) {
-            logger.error("Exception: {}", e.getMessage());
-        }
-
-        return null;
+        s3Client.putObject(bucket, key, file.getInputStream(), metadata);
+        return getUrlByKey(key);
     }
 
     /**
      * Deletes object from S3 bucket.
      *
-     * @param objectKey - key of object to delete
-     * @return result message
+     * @param key object key to delete
      */
-    public String deleteObject(String objectKey) {
-        s3Client.deleteObject(bucketName, objectKey);
-        return "Object deleted: " + objectKey;
+    public void delete(String key) {
+        s3Client.deleteObject(bucket, key);
     }
 
 }
