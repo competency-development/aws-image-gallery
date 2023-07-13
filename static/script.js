@@ -19,10 +19,12 @@ $(document).ready(function () {
         $(".row").append(Mustache.render(template, imageData));
       }
     }
+
     $(".image").unbind("click").on("click", bindExpandedImage);
     $(".info-button").unbind("click").on("click", showDescription);
     $(".play-button").unbind("click").on("click", openPlayer);
     $(".delete-button").unbind("click").on("click", deleteImage);
+
     hideAppearingElements();
     bindForMobileDevices();
   }
@@ -55,7 +57,7 @@ $(document).ready(function () {
       .then((data) => {
         var fileName = { fileName: file.name };
 
-        let alertTemplate = $("#file-uploaded-alert").html();
+        let alertTemplate = $("#upload-alert-template").html();
         $(".header").prepend(Mustache.render(alertTemplate, fileName));
 
         let template = $("#image-card-template").html();
@@ -79,6 +81,7 @@ $(document).ready(function () {
     }
   }
 
+  // TODO: AWS Rekognition call
   function showDescription() {
     const parent = $(this).closest(".image-card");
     parent.find(".hover-buttons").toggle();
@@ -127,7 +130,7 @@ $(document).ready(function () {
       .then((data) => {
         var fileName = { fileName: file.name };
 
-        let alertTemplate = $("#file-uploaded-alert").html();
+        let alertTemplate = $("#upload-alert-template").html();
         $(".header").prepend(Mustache.render(alertTemplate, fileName));
 
         let template = $("#image-card-template").html();

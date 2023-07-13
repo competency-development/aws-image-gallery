@@ -67,9 +67,6 @@ public class S3BucketService {
      */
     public String upload(String key, MultipartFile file) throws IOException {
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(file.getContentType());
-        metadata.setContentLength(file.getSize());
-
         s3Client.putObject(bucket, key, file.getInputStream(), metadata);
         return getUrlByKey(key);
     }
