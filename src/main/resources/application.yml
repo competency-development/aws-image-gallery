@@ -24,3 +24,7 @@ cloud:
 
 s3:
   bucket: competency-development-images-130723
+
+amazon:
+  dynamodb:
+    endpoint: http://localhost:8000/
