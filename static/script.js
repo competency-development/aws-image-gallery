@@ -89,22 +89,37 @@ $(document).ready(function () {
   }
 
   function openPlayer() {
+    const text = $(this).closest(".image-card").find(".description").text();
+    const url = "http://localhost:8080/synthesize";
+
+    const formData = new FormData();
+    formData.append("text", text);
+
+    const fetchOptions = {
+      method: "POST",
+      body: formData,
+    };
+
+    fetch(url, fetchOptions)
+        .then((data) => {
+          var audio = document.createElement('audio');
+
+          // Set the audio src to the URL of the audio file
+          audio.src = data.body;
+
+          // Listen for the audio load event
+          audio.addEventListener('load', function () {
+            // Play the audio
+            audio.play();
+          });
+        });
+
     // TODO: Call POST for description
     /*post('urlToApiGateway', null, function (data) {
         var parent = $(this).closest('.image-card');
         parent.find('.hover-buttons').toggle();
         parent.find('.audio').addClass('appear-animation').append('<audio id="audio" src="'+ data +'" controls></audio>').toggle();
         });*/
-
-    // TO_BE_REMOVED_START
-    const parent = $(this).closest(".image-card");
-    parent.find(".hover-buttons").toggle();
-    parent
-      .find(".audio")
-      .addClass("appear-animation")
-      .append('<audio id="audio" src="" controls></audio>')
-      .toggle();
-    // TO_BE_REMOVED_END
   }
 
   function deleteImage() {

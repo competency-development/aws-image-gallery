@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class RekognitionService {
 
-    @Value("${s3.bucket}")
+    @Value("${s3.bucket.images}")
     private String bucket;
 
     private final RekognitionClient rekognitionClient;
@@ -25,6 +25,13 @@ public class RekognitionService {
         this.imageRepository = imageRepository;
     }
 
+    /**
+     * Takes image key in S3 bucket and send that image to Rekognition service. The service processes image and returns
+     * labels that describe given image.
+     *
+     * @param imageName - key of the image in the bucket
+     * @return concatenated string of labels
+     */
     public String generateImageDescription(String imageName) {
         DetectLabelsRequest request = DetectLabelsRequest.builder()
                 .image(Image.builder()
@@ -44,8 +51,7 @@ public class RekognitionService {
             System.out.println("Detected labels for " + imageName);
             String description = labels.stream().map(Label::name).collect(Collectors.joining(", "));
 
-            Optional<com.example.gallery.domain.Image> persistedImage =  imageRepository.findByKey(imageName);
-            persistedImage.ifPresent(image -> {
+            imageRepository.findByKey(imageName).ifPresent(image -> {
                 image.setDescription(description);
                 imageRepository.save(image);
             });

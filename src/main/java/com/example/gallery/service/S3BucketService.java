@@ -1,6 +1,7 @@
 package com.example.gallery.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class S3BucketService {
     @Autowired
     private AmazonS3 s3Client;
 
-    @Value("${s3.bucket}")
+    @Value("${s3.bucket.images}")
     private String bucket;
 
     /**

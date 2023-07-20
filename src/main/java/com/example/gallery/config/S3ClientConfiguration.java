@@ -12,7 +12,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 @Configuration
 public class S3ClientConfiguration {
 
-    @Value("${aws.profile:default}")
+    @Value("${aws.profile:kotsial}")
     private String profile;
 
     @Value("${cloud.aws.region.static}")
