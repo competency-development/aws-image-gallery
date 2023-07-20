@@ -52,7 +52,7 @@ public class ImageService {
         String imageName = RandomStringUtils.randomAlphanumeric(24);
         String imageUrl = bucketService.upload(imageName, file);
 
-        Image image = new Image(null, imageName, imageUrl, null);
+        Image image = new Image(null, imageName, imageUrl, "Default description.");
         repository.save(image);
 
         log.info("Image uploaded: {}", imageName);

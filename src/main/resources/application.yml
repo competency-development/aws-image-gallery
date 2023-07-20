@@ -23,4 +23,6 @@ cloud:
       instanceProfile: true
 
 s3:
-  bucket: competency-development-images-130723
+  bucket:
+    images: kotsial-images-central
+    audios: kotsial-mpegs-central
