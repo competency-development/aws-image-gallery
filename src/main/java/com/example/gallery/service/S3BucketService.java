@@ -21,7 +21,7 @@ public class S3BucketService {
     @Autowired
     private AmazonS3 s3Client;
 
-    @Value("${s3.bucket}")
+    @Value("${s3.bucket.images}")
     private String bucket;
 
     /**
