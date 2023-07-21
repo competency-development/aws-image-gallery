@@ -28,9 +28,9 @@ cloud:
       instanceProfile: true
 
 s3:
-  bucket: competency-development-images-130723
-  images: competency-development-images-130723
-  audios: competency-development-audios-130723
+  bucket:
+    images: competency-development-images-130723
+    audios: competency-development-audios-130723
 
 amazon:
   dynamodb:
