@@ -3,19 +3,23 @@ package com.example.gallery.service;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.amazonaws.services.polly.AmazonPolly;
-import com.amazonaws.services.polly.model.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
+
+import com.amazonaws.services.polly.AmazonPolly;
+import com.amazonaws.services.polly.model.OutputFormat;
+import com.amazonaws.services.polly.model.SynthesizeSpeechRequest;
+import com.amazonaws.services.polly.model.SynthesizeSpeechResult;
+import com.amazonaws.services.polly.model.VoiceId;
 
 @Service
 public class PollyService {
 
     private final AmazonPolly amazonPolly;
 
-    private final S3AudiosBucketService audiosBucketService;
+    private final S3AudioBucketService audiosBucketService;
 
-    public PollyService(AmazonPolly amazonPolly, S3AudiosBucketService audiosBucketService) {
+    public PollyService(AmazonPolly amazonPolly, S3AudioBucketService audiosBucketService) {
         this.amazonPolly = amazonPolly;
         this.audiosBucketService = audiosBucketService;
     }

@@ -1,22 +1,17 @@
 package com.example.gallery.service;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 
 @Service
-public class S3AudiosBucketService {
+public class S3AudioBucketService {
 
     @Autowired
     private AmazonS3 s3Client;
@@ -48,4 +43,5 @@ public class S3AudiosBucketService {
         s3Client.putObject(bucket, key, inputStream, metadata);
         return getUrlByKey(key);
     }
+
 }
