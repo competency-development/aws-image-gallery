@@ -1,13 +1,12 @@
 package com.example.gallery.service;
 
-import com.example.gallery.repository.ImageRepository;
+import com.example.gallery.repository.ImagesRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.rekognition.RekognitionClient;
 import software.amazon.awssdk.services.rekognition.model.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,11 +17,11 @@ public class RekognitionService {
 
     private final RekognitionClient rekognitionClient;
 
-    private final ImageRepository imageRepository;
+    private final ImagesRepository imagesRepository;
 
-    public RekognitionService(RekognitionClient rekognitionClient, ImageRepository imageRepository) {
+    public RekognitionService(RekognitionClient rekognitionClient, ImagesRepository imagesRepository) {
         this.rekognitionClient = rekognitionClient;
-        this.imageRepository = imageRepository;
+        this.imagesRepository = imagesRepository;
     }
 
     /**
@@ -51,9 +50,9 @@ public class RekognitionService {
             System.out.println("Detected labels for " + imageName);
             String description = labels.stream().map(Label::name).collect(Collectors.joining(", "));
 
-            imageRepository.findByKey(imageName).ifPresent(image -> {
+            imagesRepository.find(imageName).ifPresent(image -> {
                 image.setDescription(description);
-                imageRepository.save(image);
+                imagesRepository.save(image);
             });
 
             return description;

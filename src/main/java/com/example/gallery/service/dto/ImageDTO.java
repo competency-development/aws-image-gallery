@@ -1,51 +1,38 @@
 package com.example.gallery.service.dto;
 
+import com.example.gallery.domain.Image;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * DTO for {@ling Image}.
+ * DTO for {@link Image}.
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ImageDTO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String key;
     private String url;
     private String description;
 
-    public ImageDTO(String key, String url, String description) {
-        this.key = key;
-        this.url = url;
-        this.description = description;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public String toString() {
-        return "ImageDTO [key=" + key + ", url=" + url + ", description=" + description + "]";
+        return new ToStringBuilder(this)
+                .append("key", key)
+                .append("url", url)
+                .append("description", description)
+                .toString();
     }
 
 }
