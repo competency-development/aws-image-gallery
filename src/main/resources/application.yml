@@ -15,6 +15,21 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
+  security:
+    oauth2:
+      client:
+        registration:
+          cognito:
+            clientId: ${cognito.client.id}
+            clientSecret: ${cognito.client.secret}
+            scope: openid
+            redirect-uri: http://localhost:8080/login/oauth2/code/cognito
+            clientName: ${cognito.client.name}
+        provider:
+          cognito:
+            issuerUri: https://cognito-idp.eu-central-1.amazonaws.com/${cognito.user-pool.id}
+            #userNameAttribute: username
+
 cloud:
   aws:
     region:
@@ -22,7 +37,16 @@ cloud:
     credentials:
       instanceProfile: true
 
+aws:
+  profile: ${PROFILE}
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
 s3:
   bucket:
-    images: competency-development-images-130723
-    audios: competency-development-audios-130723
+    images: kotsial-images-central
+    audios: kotsial-mpegs-central
