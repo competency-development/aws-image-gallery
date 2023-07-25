@@ -6,6 +6,7 @@ import com.example.gallery.service.dto.ImageDTO;
 import com.example.gallery.service.mapper.ImageMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
