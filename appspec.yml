@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /tmp
+file_exists_behavior: OVERWRITE
+hooks:
+  ApplicationStop:
+    - location: stop_jar.sh
+      timeout: 20
+      runas: root
+  ApplicationStart:
+    - location: start_jar.sh
+      timeout: 60
+      runas: root
+  ValidateService:
+    - location: health_check.sh
+      timeout: 30
